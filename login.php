@@ -151,6 +151,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .logo-icon {
             font-size: 2.5rem;
         }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 15px;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                font-size: 2rem;
+            }
+            
+            input[type="text"],
+            input[type="password"] {
+                padding: 10px;
+                font-size: 15px;
+            }
+            
+            button {
+                padding: 12px;
+                font-size: 15px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>

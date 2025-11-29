@@ -15,147 +15,240 @@ require_once 'config.php';
 <head>
   <title>E-marketplace Dashboard</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f9f9f9;
-    }
+  /* Desktop / base styles (keep your existing desktop rules) */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
+  header {
+    background: linear-gradient(to right, #2d5a27, #3d7a35);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header h1 { margin: 0; font-size: 1.25rem; }
+  header a { color: white; text-decoration: none; margin-right: 12px; }
+  header button { padding: 10px 20px; background: #f28c28; border: none; cursor: pointer; color: white; border-radius: 5px; font-size: 1rem; }
+
+  #filter {
+    padding: 15px;
+    background: white;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin: 20px 5%;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .card img, .card video { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; display: block; }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 600px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+
+  .close { float: right; cursor: pointer; font-size: 24px; color: #888; }
+
+  .success-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    z-index: 1001;
+    display: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  /* -------------------
+     Responsive: Tablet
+     ------------------- */
+  @media (max-width: 992px) {
+    header { padding: 12px 18px; }
+    .modal-content { width: 520px; padding: 22px; }
+    .card img, .card video { height: 180px; }
+  }
+
+  /* -------------------
+     Responsive: Mobile
+     ------------------- */
+  @media (max-width: 768px) {
     header {
-      background: linear-gradient(to right, #2d5a27, #3d7a35);
-      color: white;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      align-items: stretch;
+      text-align: center;
     }
 
-    button {
-      padding: 10px 20px;
-      background: #f28c28;
-      border: none;
-      cursor: pointer;
-      color: white;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    
+    header h1 { font-size: 1.15rem; }
+    header div { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; }
+    header a { margin-right: 0; display: inline-block; padding: 6px 8px; }
+    header button { width: 100%; max-width: 300px; margin: 6px auto 0; }
+
     #filter {
-      padding: 15px;
-      background: white;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      margin: 20px 5%;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex-direction: column;
+      align-items: stretch;
+      margin: 12px 4%;
+      padding: 12px;
     }
 
-   .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-      padding: 20px;
+    #filter label { font-size: 0.95rem; margin-bottom: 6px; }
+    #filter select { width: 100%; padding: 10px; font-size: 0.95rem; }
+
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 12px;
     }
 
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 16px;
     }
 
-    .card h3 {
-      margin-top: 0;
-      color: #2d5a27;
+    .card img, .card video {
+      height: 220px;
+      border-radius: 8px;
     }
-    
-    .price {
-      font-weight: bold;
-      color: #f28c28;
-      font-size: 1.1rem;
-    }
-    
-    .category {
-      display: inline-block;
-      background: #e8f5e9;
-      color: #2d5a27;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-bottom: 10px;
-    }
-    
+
     .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+      align-items: flex-start;
+      padding-top: 30px;
     }
 
     .modal-content {
-      background: white;
-      padding: 25px;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 18px;
       border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
     }
 
     .modal-content input,
     .modal-content select,
     .modal-content textarea {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-sizing: border-box;
+      padding: 12px;
+      font-size: 1rem;
     }
 
-    .close {
-      float: right;
-      cursor: pointer;
-      font-size: 24px;
-      color: #888;
+    .close { font-size: 22px; }
+
+    button {
+      padding: 12px 14px;
+      font-size: 1rem;
+      border-radius: 8px;
     }
-    
-    .close:hover {
-      color: #333;
-    }
-    
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    
+
     .success-message {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #4CAF50;
-      color: white;
-      padding: 15px;
-      border-radius: 5px;
-      z-index: 1001;
-      display: none;
+      top: 14px;
+      right: 12px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
     }
-    
-    .error-message {
-      color: #d32f2f;
-      font-size: 0.9rem;
-      margin-top: 5px;
+  }
+
+  /* -------------------
+     Small Mobile
+     ------------------- */
+  @media (max-width: 480px) {
+    header h1 { font-size: 1rem; }
+    header div { gap: 6px; }
+    .grid { padding: 8px; gap: 12px; }
+    .card img, .card video { height: 180px; }
+
+    .modal-content {
+      padding: 14px;
+      max-height: 85vh;
     }
+
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+
+    .form-group label { font-size: 0.95rem; }
+
+    /* Make primary button full width inside modal */
+    .modal-content button,
+    header button {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  /* -------------------
+     Extra small phones
+     ------------------- */
+  @media (max-width: 360px) {
+    body { font-size: 14px; }
+    .card img, .card video { height: 160px; }
+    .modal-content { padding: 12px; }
+    .modal-content input, .modal-content select, .modal-content textarea { padding: 8px; }
+  }
+
+  /* For touch devices - reduce hover transitions */
+  @media (hover: none) and (pointer: coarse) {
+    .card { transition: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .card:hover { transform: none; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    button:hover { background: #f28c28; }
+  }
   </style>
 </head>
 <body>
@@ -209,9 +302,10 @@ require_once 'config.php';
     </div>
     <div class="form-group">
       <label for="pMedia">Upload Image/Video</label>
-      <input type="file" id="pMedia" accept="image/*,video/*">
-      <small>Upload image or short video (max ~5MB)</small>
+      <input type="file" id="pMedia" accept="image/*,video/*" onchange="validateAndPreviewMedia(this)">
+      <small>Upload image or short video (max 2MB)</small>
       <div id="mediaPreview" style="margin-top:10px;"></div>
+      <div id="fileError" style="color: #d32f2f; font-size: 0.9rem; margin-top: 5px; display: none;"></div>
     </div>
     <div class="form-group">
       <label for="phoneNumber">Phone Number *</label>
@@ -274,6 +368,12 @@ require_once 'config.php';
       return;
     }
 
+    // Update button to show loading state
+    const submitBtn = document.querySelector('#modal button[onclick="addProduct()"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Uploading...";
+    submitBtn.disabled = true;
+
     // Create form data for AJAX request
     const formData = new FormData();
     formData.append('name', name);
@@ -284,6 +384,15 @@ require_once 'config.php';
     formData.append('description', description);
 
     if (media) {
+      // Validate file type again as a double-check
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
+      if (!validTypes.includes(media.type)) {
+        alert("Invalid file type. Please upload JPG, PNG, GIF, MP4, WEBM, or OGG files.");
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+      
       formData.append('media', media);
     }
 
@@ -292,6 +401,10 @@ require_once 'config.php';
     xhr.open('POST', 'add_product.php', true);
     
     xhr.onload = function() {
+      // Restore button state
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      
       if (xhr.status === 200) {
         const response = JSON.parse(xhr.responseText);
         if (response.success) {
@@ -310,8 +423,15 @@ require_once 'config.php';
           alert("Error: " + response.message);
         }
       } else {
-        alert("An error occurred while adding the product.");
+        alert("An error occurred while adding the product. Please try again.");
       }
+    };
+    
+    xhr.onerror = function() {
+      // Restore button state
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      alert("Network error occurred. Please check your connection and try again.");
     };
 
     xhr.send(formData);
@@ -380,28 +500,48 @@ require_once 'config.php';
     loadProducts(filter);
   }
 
-  document.getElementById("pMedia").addEventListener("change", function () {
-    const file = this.files[0];
+  function validateAndPreviewMedia(input) {
+    const file = input.files[0];
+    const errorDiv = document.getElementById("fileError");
     const preview = document.getElementById("mediaPreview");
-
+    
+    // Clear previous preview and errors
+    errorDiv.style.display = "none";
+    errorDiv.textContent = "";
+    preview.innerHTML = "";
+    
     if (file) {
+      // Validate file size
+      if (file.size > 2 * 1024 * 1024) {
+        errorDiv.style.display = "block";
+        errorDiv.textContent = "File size exceeds 2MB limit. Please choose a smaller file.";
+        input.value = ""; // Clear the input
+        return false;
+      }
+      
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
+      if (!validTypes.includes(file.type)) {
+        errorDiv.style.display = "block";
+        errorDiv.textContent = "Invalid file type. Please upload JPG, PNG, GIF, MP4, WEBM, or OGG files.";
+        input.value = ""; // Clear the input
+        return false;
+      }
+
+      // Create preview
       const reader = new FileReader();
       reader.onload = function(e) {
         if (file.type.startsWith("image")) {
-          preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Preview">`;
+          preview.innerHTML = `<div style="margin-top: 10px;"><img src="${e.target.result}" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Preview"></div>`;
         } else if (file.type.startsWith("video")) {
-          preview.innerHTML = `<video controls style="max-width: 100%; height: auto; border-radius: 8px;">
+          preview.innerHTML = `<div style="margin-top: 10px;"><video controls style="max-width: 100%; height: auto; border-radius: 8px;">
                                  <source src="${e.target.result}" type="${file.type}">
-                               </video>`;
-        } else {
-          preview.innerHTML = "Unsupported file type.";
+                               </video></div>`;
         }
       };
       reader.readAsDataURL(file);
-    } else {
-      preview.innerHTML = "";
     }
-  });
+  }
 
   // On page load
   closeModal();

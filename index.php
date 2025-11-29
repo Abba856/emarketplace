@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -319,24 +316,180 @@ session_start();
       .header-content {
         flex-direction: column;
         gap: 15px;
+        text-align: center;
+      }
+      
+      nav {
+        width: 100%;
+        display: flex;
+        justify-content: center;
       }
 
       nav ul {
-        gap: 15px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+        width: 100%;
+      }
+      
+      nav li {
+        width: 100%;
       }
 
       .hero {
-        height: 400px;
+        height: 40vh;
+        min-height: 300px;
       }
 
       .hero h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
       }
-
+      
+      .hero p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+      
       .section-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
+      }
+      
+      .section-header h2 {
+        font-size: 1.5rem;
+      }
+      
+      .features {
+        padding: 30px 5%;
+      }
+      
+      .features h2 {
+        font-size: 1.5rem;
+      }
+      
+      .features-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .feature-card {
+        padding: 20px;
+      }
+      
+      .products-section {
+        padding: 30px 5%;
+      }
+      
+      #filter {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+      }
+      
+      #filter label {
+        text-align: left;
+      }
+      
+      #filter select {
+        width: 100%;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 5px;
+      }
+      
+      .card img, .card video {
+        height: 180px;
+      }
+      
+      .card {
+        padding: 15px;
+      }
+      
+      .card h3 {
+        font-size: 1.2rem;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      footer {
+        padding: 30px 5% 15px;
+      }
+    }
+    
+    /* Extra small devices */
+    @media (max-width: 480px) {
+      body {
+        font-size: 0.9rem;
+      }
+      
+      .hero {
+        height: 35vh;
+        min-height: 250px;
+      }
+      
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+      
+      .hero p {
+        font-size: 0.9rem;
+      }
+      
+      .logo h1 {
+        font-size: 1.5rem;
+      }
+      
+      .features h2 {
+        font-size: 1.3rem;
+      }
+      
+      .section-header h2 {
+        font-size: 1.3rem;
+      }
+      
+      .card img, .card video {
+        height: 150px;
+      }
+      
+      .card h3 {
+        font-size: 1.1rem;
+      }
+      
+      .category {
+        font-size: 0.7rem;
+      }
+      
+      .price {
+        font-size: 1.1rem;
+      }
+      
+      .feature-card {
+        padding: 15px;
+      }
+    }
+    
+    /* For touch devices */
+    @media (hover: none) and (pointer: coarse) {
+      .card {
+        transition: none;
+      }
+      
+      .feature-card {
+        transition: none;
       }
     }
   </style>
