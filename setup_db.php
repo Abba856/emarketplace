@@ -16,6 +16,19 @@ if ($connection->query($sql_users) === TRUE) {
     echo "Error creating table: " . $connection->error . "\n";
 }
 
+// Check if farmer_name column exists, and add it if it doesn't
+$check_column = "SHOW COLUMNS FROM products LIKE 'farmer_name'";
+$result = $connection->query($check_column);
+
+if ($result->num_rows == 0) {
+    $add_column = "ALTER TABLE products ADD COLUMN farmer_name VARCHAR(100)";
+    if ($connection->query($add_column) === TRUE) {
+        echo "Column 'farmer_name' added successfully.\n";
+    } else {
+        echo "Error adding column: " . $connection->error . "\n";
+    }
+}
+
 // SQL to create products table
 $sql_products = "CREATE TABLE IF NOT EXISTS products (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -28,6 +41,7 @@ $sql_products = "CREATE TABLE IF NOT EXISTS products (
     phone VARCHAR(20) NOT NULL,
     location VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
+    farmer_name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 )";

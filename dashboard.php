@@ -308,8 +308,12 @@ require_once 'config.php';
       <div id="fileError" style="color: #d32f2f; font-size: 0.9rem; margin-top: 5px; display: none;"></div>
     </div>
     <div class="form-group">
-      <label for="phoneNumber">Phone Number *</label>
-      <input type="text" id="phoneNumber" placeholder="Enter phone number">
+      <label for="farmerName">Farmer Name *</label>
+      <input type="text" id="farmerName" placeholder="Enter farmer name">
+    </div>
+    <div class="form-group">
+      <label for="phoneNumber">Contact me *</label>
+      <input type="text" id="phoneNumber" placeholder="Enter contact information">
     </div>
     <div class="form-group">
       <label for="location">Location *</label>
@@ -328,7 +332,7 @@ require_once 'config.php';
 </div>
 
 <div class="success-message" id="successMessage">
-  Product added successfully!
+  Operation completed successfully!
 </div>
 
 <script>
@@ -348,6 +352,7 @@ require_once 'config.php';
     document.getElementById("pCategory").value = 'fruit';
     document.getElementById("pPrice").value = '';
     document.getElementById("pMedia").value = '';
+    document.getElementById("farmerName").value = '';
     document.getElementById("phoneNumber").value = '';
     document.getElementById("location").value = '';
     document.getElementById("pDesc").value = '';
@@ -359,11 +364,12 @@ require_once 'config.php';
     const category = document.getElementById("pCategory").value;
     const price = document.getElementById("pPrice").value;
     const media = document.getElementById("pMedia").files[0];
+    const farmerName = document.getElementById("farmerName").value;
     const phone = document.getElementById("phoneNumber").value;
     const location = document.getElementById("location").value;
     const description = document.getElementById("pDesc").value;
 
-    if (!name || !price || !description || !phone || !location) {
+    if (!name || !price || !farmerName || !phone || !location || !description) {
       alert("Please fill all required fields.");
       return;
     }
@@ -382,6 +388,7 @@ require_once 'config.php';
     formData.append('phone', phone);
     formData.append('location', location);
     formData.append('description', description);
+    formData.append('farmer_name', farmerName);
 
     if (media) {
       // Validate file type again as a double-check
@@ -392,19 +399,19 @@ require_once 'config.php';
         submitBtn.disabled = false;
         return;
       }
-      
+
       formData.append('media', media);
     }
 
     // Send AJAX request to add product
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'add_product.php', true);
-    
+
     xhr.onload = function() {
       // Restore button state
       submitBtn.textContent = originalText;
       submitBtn.disabled = false;
-      
+
       if (xhr.status === 200) {
         const response = JSON.parse(xhr.responseText);
         if (response.success) {
@@ -413,10 +420,10 @@ require_once 'config.php';
           setTimeout(function() {
             document.getElementById("successMessage").style.display = "none";
           }, 3000);
-          
+
           // Reload products
           loadProducts(currentFilter);
-          
+
           // Close modal
           closeModal();
         } else {
@@ -426,7 +433,7 @@ require_once 'config.php';
         alert("An error occurred while adding the product. Please try again.");
       }
     };
-    
+
     xhr.onerror = function() {
       // Restore button state
       submitBtn.textContent = originalText;
@@ -486,9 +493,13 @@ require_once 'config.php';
         <span class="category">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
         <h3>${p.name}</h3>
         <p class="price">₦${p.price}</p>
-        <p><strong>Phone:</strong> ${p.phone}</p>
+        <p><strong>Farmer:</strong> ${p.farmer_name || 'N/A'}</p>
+        <p><strong>Contact me:</strong> ${p.phone}</p>
         <p><strong>Location:</strong> ${p.location}</p>
         <p>${p.description}</p>
+        <div style="margin-top: 15px; text-align: right;">
+          <button onclick="deleteProduct(${p.id})" style="background: #d32f2f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Delete</button>
+        </div>
       `;
 
       container.appendChild(card);
@@ -504,12 +515,12 @@ require_once 'config.php';
     const file = input.files[0];
     const errorDiv = document.getElementById("fileError");
     const preview = document.getElementById("mediaPreview");
-    
+
     // Clear previous preview and errors
     errorDiv.style.display = "none";
     errorDiv.textContent = "";
     preview.innerHTML = "";
-    
+
     if (file) {
       // Validate file size
       if (file.size > 2 * 1024 * 1024) {
@@ -518,7 +529,7 @@ require_once 'config.php';
         input.value = ""; // Clear the input
         return false;
       }
-      
+
       // Validate file type
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
       if (!validTypes.includes(file.type)) {
@@ -541,6 +552,47 @@ require_once 'config.php';
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  function deleteProduct(productId) {
+    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+      return;
+    }
+
+    // Create form data for AJAX request
+    const formData = new FormData();
+    formData.append('product_id', productId);
+
+    // Send AJAX request to delete product
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'delete_product.php', true);
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        if (response.success) {
+          // Show success message
+          document.getElementById("successMessage").style.display = "block";
+          document.getElementById("successMessage").textContent = response.message;
+          setTimeout(function() {
+            document.getElementById("successMessage").style.display = "none";
+          }, 3000);
+
+          // Reload products
+          loadProducts(currentFilter);
+        } else {
+          alert("Error: " + response.message);
+        }
+      } else {
+        alert("An error occurred while deleting the product. Please try again.");
+      }
+    };
+
+    xhr.onerror = function() {
+      alert("Network error occurred. Please check your connection and try again.");
+    };
+
+    xhr.send(formData);
   }
 
   // On page load

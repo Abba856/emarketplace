@@ -22,9 +22,10 @@ $price = trim($_POST['price'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 $location = trim($_POST['location'] ?? '');
 $description = trim($_POST['description'] ?? '');
+$farmer_name = trim($_POST['farmer_name'] ?? '');
 
 // Validate required fields
-if (empty($name) || empty($price) || empty($phone) || empty($location) || empty($description)) {
+if (empty($name) || empty($price) || empty($farmer_name) || empty($phone) || empty($location) || empty($description)) {
     echo json_encode(['success' => false, 'message' => 'All required fields must be filled']);
     exit;
 }
@@ -145,14 +146,14 @@ if (isset($_FILES['media']) && $_FILES['media']['error'] !== UPLOAD_ERR_NO_FILE)
 // Insert product into database with user_id
 $user_id = $_SESSION['user_id'];
 
-$stmt = $connection->prepare("INSERT INTO products (user_id, name, category, price, media_url, media_type, phone, location, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $connection->prepare("INSERT INTO products (user_id, name, category, price, media_url, media_type, phone, location, description, farmer_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 if ($stmt === false) {
     echo json_encode(['success' => false, 'message' => 'Database prepare error: ' . $connection->error]);
     exit;
 }
 
-// bind_param types: i (user_id) + 8 strings
-$stmt->bind_param("issssssss", $user_id, $name, $category, $price, $media_url, $media_type, $phone, $location, $description);
+// bind_param types: i (user_id) + 9 strings
+$stmt->bind_param("isssssssss", $user_id, $name, $category, $price, $media_url, $media_type, $phone, $location, $description, $farmer_name);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Product added successfully']);

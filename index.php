@@ -691,7 +691,8 @@ session_start();
         <h3>${p.name}</h3>
         <p>${p.description}</p>
         <p class="price">₦${p.price}</p>
-        <p><strong>Phone:</strong> ${p.phone}</p>
+        <p><strong>Farmer:</strong> ${p.farmer_name || 'N/A'}</p>
+        <p><strong>Contact me:</strong> ${p.phone}</p>
         <p><strong>Location:</strong> ${p.location}</p>
       `;
 
